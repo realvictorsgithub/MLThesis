@@ -14,9 +14,11 @@ from torch.utils.data import DataLoader
 matplotlib.style.use('ggplot')
 
 device = torch_directml.device()
-
+#device = torch.device('cpu')
 #model = models.model(pretrained=True, requires_grad=False).to(device)
-model = models.model(pretrained=True, requires_grad=False).to(device)
+#model = models.model(pretrained=True, requires_grad=False).to(device)
+model_CNN = models.CNN1(True).to(device)
+
 learningRate = 0.0001
 momentum_value = 0.9
 epochs = 20
@@ -24,7 +26,7 @@ batch_size=32
 #optimizer = optim.Adam(model.parameters(), lr = learningRate)
 #criterion = nn.BCELoss()
 criterion_multioutput = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=learningRate, momentum=momentum_value)
+optimizer = optim.SGD(model_CNN.parameters(), lr=learningRate, momentum=momentum_value)
 
 
 
@@ -58,10 +60,10 @@ valid_loss = []
 for epoch in range(epochs):
     print(f"Epoch {epoch+1} of {epochs}")
     train_epoch_loss = train(
-        model, train_loader, optimizer, criterion_multioutput, train_data, device
+        model_CNN, train_loader, optimizer, criterion_multioutput, train_data, device
     )
     valid_epoch_loss = validate(
-        model, valid_loader, criterion_multioutput, valid_data, device
+        model_CNN, valid_loader, criterion_multioutput, valid_data, device
     )
 
     train_loss.append(train_epoch_loss)
@@ -73,9 +75,9 @@ for epoch in range(epochs):
 
 torch.save({
             'epoch':epochs,
-            'model_state_dict': model.state_dict(),
+            'model_state_dict': model_CNN.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
-            'loss': criterion_multioutput,}, "/savedmodel/model.pth")
+            'loss': criterion_multioutput,}, "/home/user/Thesis/MLThesis/savedmodel/model.pth")
 
 plt.figure(figsize=(10,7))
 plt.plot(train_loss, color='orange', label='train loss')
@@ -83,5 +85,5 @@ plt.plot(valid_loss, color='red', label='validataion loss')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.legend()
-plt.savefig('/savedmodel/loss.png')
+plt.savefig('/home/user/Thesis/MLThesis/savedmodel/loss.png')
 plt.show()

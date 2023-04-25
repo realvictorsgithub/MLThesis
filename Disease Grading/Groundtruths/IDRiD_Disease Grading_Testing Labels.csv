@@ -1,4 +1,4 @@
-Image name,Retinopathy grade,Risk of macular edema 
+Image name,retinopathy_grade,macular_edema
 IDRiD_001,4,0
 IDRiD_002,4,1
 IDRiD_003,4,0

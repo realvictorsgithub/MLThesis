@@ -2,6 +2,7 @@ import torch
 import cv2
 import numpy as np 
 import torchvision.transforms as transforms
+import torch_directml
 
 from torch.utils.data import Dataset
 
@@ -54,7 +55,6 @@ class Dataset(Dataset):
 
         elif self.test == True and self.train == False:
                 self.image_names = list(self.image_names[-10:])
-                #self.labels = list(self.labels[-10:])
                 self.retinolabel = list(self.retinolabel[-10:])
                 self.maculalabel = list(self.maculalabel[-10:])
                 # define the test transforms
@@ -68,6 +68,8 @@ class Dataset(Dataset):
         return len(self.image_names)
     
     def __getitem__(self,index):
+         myDevice = torch_directml.device()
+
          image = cv2.imread(f"/home/user/Thesis/MLThesis/Disease Grading/Original Images/Training Set/{self.image_names[index]}.jpg")
          image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
          image = self.transform(image)
@@ -75,7 +77,7 @@ class Dataset(Dataset):
          retinolabel = self.retinolabel[index]
          maculalabel = self.maculalabel[index]
          return {
-            'image': torch.tensor(image, dtype=torch.float32),
-            'label1': torch.tensor(retinolabel, dtype=torch.float32),
-            'label2': torch.tensor(maculalabel, dtype=torch.float32)
+            'image': torch.tensor(image, dtype=torch.float32, device=myDevice),
+            'label1': torch.tensor(retinolabel, dtype=torch.float32, device=myDevice),
+            'label2': torch.tensor(maculalabel, dtype=torch.float32,device=myDevice)
          }

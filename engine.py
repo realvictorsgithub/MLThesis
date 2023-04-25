@@ -9,19 +9,19 @@ def train(model, dataloader, optimizer, criterion1, train_data, device):
     train_loss = 0.0
     for i, data in tqdm(enumerate(dataloader), total=int(len(train_data)/ dataloader.batch_size)):
         counter += 1
-        print(data)
+       
         image, label1, label2 = data['image'].to(device), data['label1'].to(device), data['label2'].to(device)
         optimizer.zero_grad()
         outputs = model(image)
         #outputs = torch.sigmoid(outputs)
         #loss = criterion(outputs, target)
-        
-
+      
+       
         label1_hat = outputs['label1']
         label2_hat = outputs['label2']
         
-        loss1 = criterion1(label1_hat, label1.squeeze().type(torch.LongTensor))
-        loss2 = criterion1(label2_hat, label2.squeeze().type(torch.LongTensor))
+        loss1 = criterion1(label1_hat, label1.squeeze().long())
+        loss2 = criterion1(label2_hat, label2.squeeze().long())
 
         loss = loss1+loss2
 
@@ -53,8 +53,8 @@ def validate(model, dataloader, criterion1, val_data, device):
             label2_hat = outputs['label2']
 
              
-            loss1 = criterion1(label1_hat, label1.squeeze().type(torch.LongTensor))
-            loss2 = criterion1(label2_hat, label2.squeeze().type(torch.LongTensor))
+            loss1 = criterion1(label1_hat, label1.squeeze().long())
+            loss2 = criterion1(label2_hat, label2.squeeze().long())
 
             loss = loss1+loss2
 
